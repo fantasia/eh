@@ -274,7 +274,7 @@
             background: #ffffff;
             border-radius: 18px;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             padding: 1.4rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -322,14 +322,29 @@
             margin-bottom: 0;
         }
 
+        .modal-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.6rem;
+            flex-wrap: wrap;
+        }
+
         .modal-section-title {
-            font-weight: 700;
-            font-size: 0.98rem;
-            margin-bottom: 0.4rem;
+            font-weight: 800;
+            font-size: 1.05rem;
+            white-space: nowrap;
         }
 
         .modal-section-title.weakness { color: var(--error-color); }
         .modal-section-title.strength { color: var(--secondary-color); }
+
+        .modal-icon-list {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
         .modal-desc {
             background: #f8f9fa;
@@ -588,11 +603,17 @@
             </div>
             <div class="modal-body">
                 <div class="modal-section">
-                    <div class="modal-section-title weakness">약점 (방어 시 데미지 2배)</div>
+                    <div class="modal-section-header">
+                        <div class="modal-section-title weakness">약점</div>
+                        <div id="modal-weakness-icons" class="modal-icon-list"></div>
+                    </div>
                     <div id="modal-weakness-desc" class="modal-desc"></div>
                 </div>
                 <div class="modal-section">
-                    <div class="modal-section-title strength">강점 (공격 시 효과 굉장함)</div>
+                    <div class="modal-section-header">
+                        <div class="modal-section-title strength">강점</div>
+                        <div id="modal-strength-icons" class="modal-icon-list"></div>
+                    </div>
                     <div id="modal-strength-desc" class="modal-desc"></div>
                 </div>
             </div>
@@ -820,8 +841,19 @@
         function openModal(typeId) {
             const typeObj = getTypeById(typeId);
             document.getElementById('modal-title-badge').innerHTML = createBadgeHTML(typeObj);
+
+            // Weakness icons
+            let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
+            if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+            document.getElementById('modal-weakness-icons').innerHTML = weakHTML;
             document.getElementById('modal-weakness-desc').innerText = typeObj.explanation.weaknesses;
+
+            // Strength icons
+            let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
+            if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+            document.getElementById('modal-strength-icons').innerHTML = strongHTML;
             document.getElementById('modal-strength-desc').innerText = typeObj.explanation.strengths;
+
             document.getElementById('modal-overlay').classList.add('active');
         }
 
