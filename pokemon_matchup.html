@@ -49,7 +49,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 0.8rem;
+            padding: 0.7rem;
             display: flex;
             justify-content: center;
             gap: 1rem;
@@ -82,7 +82,7 @@
         /* Main */
         main {
             flex: 1;
-            padding: 1rem 0.5rem;
+            padding: 0.8rem 0.3rem;
             max-width: 950px;
             margin: 0 auto;
             width: 100%;
@@ -115,10 +115,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
@@ -126,8 +126,8 @@
         }
 
         .type-icon .icon-inner {
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -135,9 +135,9 @@
 
         .type-name-sub {
             display: block;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: var(--sub-text-color);
-            margin-top: 3px;
+            margin-top: 2px;
             font-weight: 600;
             white-space: nowrap;
             text-align: center;
@@ -145,33 +145,33 @@
 
         /* Center Target Icon (Prominent Circular) */
         .center-type-icon {
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-            border: 2.5px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            border: 2px solid #ffffff;
         }
 
         .center-type-icon .icon-inner {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
         }
 
         .center-type-wrapper .type-name-sub {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 800;
             color: var(--text-color);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
-        /* Standard Badge for Quiz */
+        /* Standard Badge for Quiz & Modal */
         .type-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.35rem 0.85rem;
+            padding: 0.4rem 0.9rem;
             border-radius: 20px;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.12);
         }
@@ -184,21 +184,21 @@
             justify-content: center;
         }
 
-        /* Chart Layout */
+        /* Compact Chart Layout */
         .chart-header {
             display: grid;
-            grid-template-columns: 1fr 85px 1fr;
+            grid-template-columns: 1fr 70px 1fr;
             text-align: center;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.4rem;
             font-weight: 800;
-            font-size: 1.02rem;
-            padding: 0.85rem 0.5rem;
+            font-size: 0.95rem;
+            padding: 0.6rem 0.3rem;
             background: var(--surface-color);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             border: 1px solid var(--border-color);
             position: sticky;
-            top: 60px;
+            top: 55px;
             z-index: 90;
         }
 
@@ -208,30 +208,25 @@
         .chart-list {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .chart-row-container {
             background: var(--surface-color);
             border-radius: 12px;
+            border: 1px solid var(--border-color);
             overflow: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-            border: 1px solid var(--border-color);
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .chart-row-container.expanded {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(98, 0, 238, 0.12);
         }
 
         .chart-row {
             display: grid;
-            grid-template-columns: 1fr 85px 1fr;
+            grid-template-columns: 1fr 70px 1fr;
             align-items: center;
-            padding: 0.75rem 0.3rem;
+            padding: 0.45rem 0.2rem;
             cursor: pointer;
-            transition: background 0.2s;
+            border-bottom: 1px solid #f1f3f5;
+            transition: background 0.15s;
+        }
+
+        .chart-row:last-child {
+            border-bottom: none;
         }
 
         .chart-row:hover {
@@ -240,70 +235,121 @@
 
         .weaknesses, .strengths {
             display: flex;
-            gap: 4px;
+            gap: 3px;
             flex-wrap: nowrap;
             align-items: center;
         }
 
-        .weaknesses { justify-content: flex-end; padding-right: 0.4rem; }
-        .strengths { justify-content: flex-start; padding-left: 0.4rem; }
+        .weaknesses { justify-content: flex-end; padding-right: 0.3rem; }
+        .strengths { justify-content: flex-start; padding-left: 0.3rem; }
 
         .center-type {
             display: flex;
             justify-content: center;
         }
 
-        .explanation-panel {
+        /* Modal Popup Styling */
+        .modal-overlay {
             display: none;
-            padding: 1.2rem;
-            background: #f8f9fa;
-            border-top: 1px solid var(--border-color);
-            line-height: 1.6;
-            font-size: 0.95rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
-        .chart-row-container.expanded .explanation-panel {
-            display: block;
-            animation: fadeIn 0.3s ease;
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
         }
 
-        .scenario-box {
-            margin-bottom: 1rem;
+        .modal-card {
+            background: #ffffff;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 480px;
+            padding: 1.4rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .scenario-box:last-child {
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-close-btn {
+            background: #f1f3f5;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #e9ecef;
+        }
+
+        .modal-section {
+            margin-bottom: 1.2rem;
+        }
+
+        .modal-section:last-child {
             margin-bottom: 0;
         }
 
-        .scenario-title {
-            font-weight: bold;
+        .modal-section-title {
+            font-weight: 700;
+            font-size: 0.98rem;
             margin-bottom: 0.4rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
         }
-        .scenario-title.weakness { color: var(--error-color); }
-        .scenario-title.strength { color: var(--secondary-color); }
 
-        .scenario-desc {
-            background: #ffffff;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-color);
+        .modal-section-title.weakness { color: var(--error-color); }
+        .modal-section-title.strength { color: var(--secondary-color); }
+
+        .modal-desc {
+            background: #f8f9fa;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
             color: #343a40;
             font-size: 0.92rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
         }
 
         /* Quiz Layout */
         .quiz-container {
             background: var(--surface-color);
             border-radius: 20px;
-            padding: 2.2rem 1.5rem;
+            padding: 2rem 1.5rem;
             text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             max-width: 650px;
-            margin: 1rem auto 0;
+            margin: 0.5rem auto 0;
             border: 1px solid var(--border-color);
         }
 
@@ -312,8 +358,8 @@
         }
 
         .quiz-question {
-            font-size: 1.25rem;
-            margin-bottom: 1.8rem;
+            font-size: 1.2rem;
+            margin-bottom: 1.6rem;
             line-height: 1.5;
             font-weight: 600;
             color: var(--text-color);
@@ -326,14 +372,14 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.8rem;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.6rem;
         }
 
         .quiz-btn {
             background: #ffffff;
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 0.9rem;
+            padding: 0.85rem;
             color: var(--text-color);
             font-size: 1.05rem;
             cursor: pointer;
@@ -435,29 +481,29 @@
             box-shadow: 0 6px 16px rgba(98, 0, 238, 0.4);
         }
 
-        /* Mobile Adjustments for Single Line Icon Fit */
+        /* Mobile Adjustments */
         @media (max-width: 600px) {
-            main { padding: 0.8rem 0.2rem; }
+            main { padding: 0.5rem 0.1rem; }
             .chart-header {
-                grid-template-columns: 1fr 70px 1fr;
-                font-size: 0.9rem;
-                padding: 0.7rem 0.2rem;
-                top: 55px;
+                grid-template-columns: 1fr 65px 1fr;
+                font-size: 0.88rem;
+                padding: 0.55rem 0.1rem;
+                top: 50px;
             }
             .chart-row {
-                grid-template-columns: 1fr 70px 1fr;
-                padding: 0.65rem 0.1rem;
+                grid-template-columns: 1fr 65px 1fr;
+                padding: 0.38rem 0.1rem;
             }
-            .weaknesses { padding-right: 0.2rem; gap: 2px; }
-            .strengths { padding-left: 0.2rem; gap: 2px; }
+            .weaknesses { padding-right: 0.1rem; gap: 2px; }
+            .strengths { padding-left: 0.1rem; gap: 2px; }
 
-            .type-icon { width: 25px; height: 25px; }
-            .type-icon .icon-inner { width: 14px; height: 14px; }
-            .type-name-sub { font-size: 0.62rem; margin-top: 2px; }
+            .type-icon { width: 24px; height: 24px; }
+            .type-icon .icon-inner { width: 13px; height: 13px; }
+            .type-name-sub { font-size: 0.6rem; margin-top: 1px; }
 
-            .center-type-icon { width: 33px; height: 33px; }
-            .center-type-icon .icon-inner { width: 19px; height: 19px; }
-            .center-type-wrapper .type-name-sub { font-size: 0.72rem; }
+            .center-type-icon { width: 31px; height: 31px; }
+            .center-type-icon .icon-inner { width: 18px; height: 18px; }
+            .center-type-wrapper .type-name-sub { font-size: 0.7rem; }
 
             .quiz-options { grid-template-columns: 1fr; }
             .quiz-container { padding: 1.2rem 0.8rem; }
@@ -532,6 +578,26 @@
             </g>
         </defs>
     </svg>
+
+    <!-- Modal Popup Dialog for Type Details -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div id="modal-title-badge"></div>
+                <button class="modal-close-btn" onclick="closeModal()" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title weakness">약점 (방어 시 데미지 2배)</div>
+                    <div id="modal-weakness-desc" class="modal-desc"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title strength">강점 (공격 시 효과 굉장함)</div>
+                    <div id="modal-strength-desc" class="modal-desc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <nav>
         <button id="nav-chart" class="active" onclick="switchView('chart')">📊 상성표</button>
@@ -750,18 +816,18 @@
             }
         }
 
-        // --- Accordion Single Open Logic ---
-        function toggleRow(targetContainer) {
-            const isExpanded = targetContainer.classList.contains('expanded');
-            
-            // Close all other rows so only ONE remains open
-            document.querySelectorAll('.chart-row-container').forEach(container => {
-                container.classList.remove('expanded');
-            });
-            
-            // Toggle current row
-            if (!isExpanded) {
-                targetContainer.classList.add('expanded');
+        // --- Modal Popup Logic ---
+        function openModal(typeId) {
+            const typeObj = getTypeById(typeId);
+            document.getElementById('modal-title-badge').innerHTML = createBadgeHTML(typeObj);
+            document.getElementById('modal-weakness-desc').innerText = typeObj.explanation.weaknesses;
+            document.getElementById('modal-strength-desc').innerText = typeObj.explanation.strengths;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function closeModal(e) {
+            if (!e || e.target.id === 'modal-overlay' || e.target.classList.contains('modal-close-btn')) {
+                document.getElementById('modal-overlay').classList.remove('active');
             }
         }
 
@@ -800,37 +866,26 @@
             chartList.innerHTML = '';
             
             typeData.forEach(typeObj => {
-                const rowContainer = document.createElement('div');
-                rowContainer.className = 'chart-row-container';
+                const row = document.createElement('div');
+                row.className = 'chart-row';
+                row.onclick = () => openModal(typeObj.id);
                 
                 // Weaknesses HTML
                 let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+                if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.82rem;">없음</span>`;
 
                 // Strengths HTML
                 let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+                if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.82rem;">없음</span>`;
 
-                rowContainer.innerHTML = `
-                    <div class="chart-row" onclick="toggleRow(this.parentElement)">
-                        <div class="weaknesses">${weakHTML}</div>
-                        <div class="center-type">
-                            ${createIconHTML(typeObj, true)}
-                        </div>
-                        <div class="strengths">${strongHTML}</div>
+                row.innerHTML = `
+                    <div class="weaknesses">${weakHTML}</div>
+                    <div class="center-type">
+                        ${createIconHTML(typeObj, true)}
                     </div>
-                    <div class="explanation-panel">
-                        <div class="scenario-box">
-                            <div class="scenario-title weakness">❌ 약점 (방어 시 데미지 2배)</div>
-                            <div class="scenario-desc">${typeObj.explanation.weaknesses}</div>
-                        </div>
-                        <div class="scenario-box">
-                            <div class="scenario-title strength">⚔️ 강점 (공격 시 효과 굉장함)</div>
-                            <div class="scenario-desc">${typeObj.explanation.strengths}</div>
-                        </div>
-                    </div>
+                    <div class="strengths">${strongHTML}</div>
                 `;
-                chartList.appendChild(rowContainer);
+                chartList.appendChild(row);
             });
         }
 
