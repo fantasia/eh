@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포켓몬스터 상성표 & 퀴즈</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --error-color: #cf6679;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* SVG icon class styling */
+        .type-icon-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav button {
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        nav button.active {
+            background: rgba(187, 134, 252, 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        nav button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Main */
+        main {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            max-width: 950px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Type Components */
+        .type-icon-wrapper {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .type-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            position: relative;
+            cursor: help;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .type-icon .icon-inner {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .type-icon:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+        .type-icon::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .type-icon:hover::after {
+            opacity: 1;
+        }
+
+        .type-name-sub {
+            display: none;
+            font-size: 0.75rem;
+            color: var(--text-color);
+            margin-top: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Show type name under icons when row is expanded */
+        .chart-row-container.expanded .type-name-sub {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Center Target Type (Prominent & Larger) */
+        .center-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transform: scale(1.12);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .center-type-badge .center-icon-inner {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-row:hover .center-type-badge {
+            transform: scale(1.2);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+        }
+
+        /* Standard Badge for lists and quiz */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .type-badge .badge-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Chart Layout */
+        .chart-header {
+            display: grid;
+            grid-template-columns: 1fr 160px 1fr;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 1.1rem 1rem;
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+
+        .header-weakness { color: var(--error-color); }
+        .header-strength { color: var(--secondary-color); }
+
+        .chart-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .chart-row-container {
+            background: var(--surface-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: border-color 0.2s;
+        }
+
+        .chart-row-container.expanded {
+            border-color: rgba(187, 134, 252, 0.5);
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 160px 1fr;
+            align-items: center;
+            padding: 1.1rem 0.6rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chart-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .weaknesses, .strengths {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .weaknesses { justify-content: flex-end; padding-right: 0.8rem; }
+        .strengths { justify-content: flex-start; padding-left: 0.8rem; }
+
+        .center-type {
+            display: flex;
+            justify-content: center;
+        }
+
+        .explanation-panel {
+            display: none;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.35);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .chart-row-container.expanded .explanation-panel {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .chart-row-container.expanded .chart-row {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .scenario-box {
+            margin-bottom: 1.2rem;
+        }
+        .scenario-box:last-child {
+            margin-bottom: 0;
+        }
+
+        .scenario-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+        }
+        .scenario-title.weakness { color: var(--error-color); }
+        .scenario-title.strength { color: var(--secondary-color); }
+
+        .type-badge-list {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.6rem;
+        }
+
+        .scenario-desc {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border-left: 3px solid rgba(255, 255, 255, 0.1);
+            color: #d0d0d0;
+        }
+
+        /* Quiz Layout */
+        .quiz-container {
+            background: var(--surface-color);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 650px;
+            margin: 1.5rem auto 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .quiz-target {
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question {
+            font-size: 1.35rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .quiz-question .highlight-weak { color: var(--error-color); font-weight: bold; }
+        .quiz-question .highlight-strong { color: var(--secondary-color); font-weight: bold; }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            font-weight: 600;
+        }
+
+        .quiz-btn .quiz-option-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .quiz-btn .quiz-option-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .quiz-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .quiz-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .quiz-btn.correct {
+            background: rgba(3, 218, 198, 0.2) !important;
+            border-color: var(--secondary-color) !important;
+            opacity: 1 !important;
+        }
+
+        .quiz-btn.wrong {
+            background: rgba(207, 102, 121, 0.2) !important;
+            border-color: var(--error-color) !important;
+        }
+
+        .quiz-result {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.4s ease;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .quiz-result h3 {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .quiz-result.correct-bg { 
+            background: rgba(3, 218, 198, 0.05); 
+            border: 1px solid rgba(3, 218, 198, 0.2);
+        }
+        .quiz-result.wrong-bg { 
+            background: rgba(207, 102, 121, 0.05); 
+            border: 1px solid rgba(207, 102, 121, 0.2);
+        }
+
+        .next-btn {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+            margin: 0 auto;
+        }
+
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.4);
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 600px) {
+            .chart-row, .chart-header {
+                grid-template-columns: 1fr 120px 1fr;
+                font-size: 0.85rem;
+            }
+            .weaknesses { padding-right: 0.4rem; }
+            .strengths { padding-left: 0.4rem; }
+            .type-icon { width: 32px; height: 32px; }
+            .type-icon .icon-inner { width: 17px; height: 17px; }
+            .center-type-badge { padding: 0.4rem 0.8rem; font-size: 0.95rem; transform: scale(1); }
+            .center-type-badge .center-icon-inner { width: 20px; height: 20px; }
+            
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+            .quiz-container {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Central SVG Sprite Sheet matching exact official Pokemon GO icons -->
+    <svg style="display: none;">
+        <defs>
+            <g id="icon-normal">
+                <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <circle cx="12" cy="12" r="3.2" fill="currentColor"/>
+            </g>
+            <g id="icon-fire">
+                <path fill="currentColor" d="M12 3c-1.5 3-4.5 5.5-4.5 9.5 0 4.1 3.4 7.5 7.5 7.5s7.5-3.4 7.5-7.5c0-4.5-4-7.5-5.5-10.5-1 2.5-2 4-4 4s-2-2-1-3.5zM12 14a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
+            </g>
+            <g id="icon-water">
+                <path fill="currentColor" d="M12 3S5.5 10.5 5.5 15.5C5.5 19.1 8.4 22 12 22s6.5-2.9 6.5-6.5C18.5 10.5 12 3 12 3z"/>
+            </g>
+            <g id="icon-grass">
+                <path fill="currentColor" d="M17 4c-5.5 0-9.5 3.5-11 9 1 4 4.5 7 8.5 7 6 0 9.5-5 9.5-11.5 0-2.5-1.5-4.5-7-4.5zm-3.5 13c-3 0-5-2-5.5-5 3 .5 5-.5 6.5-2 1.5-1.5 2.5-3.5 3-6 .5 3.5-1 8.5-4 13z"/>
+            </g>
+            <g id="icon-electric">
+                <path fill="currentColor" d="M14.5 2.5L5.5 13h5L8 21.5 18.5 11h-5l3-8.5z"/>
+            </g>
+            <g id="icon-ice">
+                <path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="12" cy="3" r="1.5" fill="currentColor"/>
+                <circle cx="12" cy="21" r="1.5" fill="currentColor"/>
+                <circle cx="4.2" cy="7.5" r="1.5" fill="currentColor"/>
+                <circle cx="19.8" cy="16.5" r="1.5" fill="currentColor"/>
+                <circle cx="4.2" cy="16.5" r="1.5" fill="currentColor"/>
+                <circle cx="19.8" cy="7.5" r="1.5" fill="currentColor"/>
+            </g>
+            <g id="icon-fighting">
+                <path fill="currentColor" d="M6 6h11a1.5 1.5 0 0 1 0 3H9v2h9a1.5 1.5 0 0 1 0 3H9v2h7a1.5 1.5 0 0 1 0 3H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
+            </g>
+            <g id="icon-poison">
+                <path fill="currentColor" d="M12 3a8 8 0 0 0-8 8c0 3.1 1.8 5.8 4.4 7.1V20h7.2v-1.9c2.6-1.3 4.4-4 4.4-7.1 0-4.4-3.6-8-8-8zm-3.5 6.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM10.5 17v-1.5h3V17h-3z"/>
+            </g>
+            <g id="icon-ground">
+                <path fill="currentColor" d="M4 18h16L14 6h-4L4 18zm5-4.5l3-4.5 3 4.5H9z"/>
+            </g>
+            <g id="icon-flying">
+                <path fill="currentColor" d="M4 15c4.5 0 8.5-2 11-6.5C13 12 16.5 14.5 20 15c-3.5 3-7.5 4.5-12 4.5-2 0-3.5-.5-4-1.5z"/>
+            </g>
+            <g id="icon-psychic">
+                <path d="M12 4.5a7.5 7.5 0 1 0 7.5 7.5c0-3.3-2.7-6-6-6s-4.5 2-4.5 4.5 2 4.5 4.5 4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+            </g>
+            <g id="icon-bug">
+                <path fill="currentColor" d="M12 7c-3 0-5.5 2.5-5.5 5.5v2.5c0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5V12.5C17.5 9.5 15 7 12 7zm-1-3.5a1.2 1.2 0 1 1 2.4 0V5h-2.4V3.5zM7.5 5a1.2 1.2 0 1 1 1.7 1.7L8 7.9A7 7 0 0 0 6.8 6.7L7.5 5zm9 0l.7 1.7A7 7 0 0 0 16 7.9l-1.2-1.2A1.2 1.2 0 1 1 16.5 5zM11 11h2v7.5h-2V11z"/>
+            </g>
+            <g id="icon-rock">
+                <path fill="currentColor" d="M13.5 4L6.5 7.5 4 14l5 6.5 9.5-2.5 1.5-8L13.5 4zm-1 3.5l4 2.5-1 5-5.5 2-3-4.5 1.5-4 4-1z"/>
+            </g>
+            <g id="icon-ghost">
+                <path fill="currentColor" d="M14 6c-3.9 0-7 3.1-7 7 0 2 .8 3.8 2.1 5.1C7.8 19 6.2 20 4 20c3.5 0 6.5-1.5 8.2-3.8 5.4.4 9.8-3.9 9.8-9.2 0-3.9-3.1-7-7-7zm-2 5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+            </g>
+            <g id="icon-dragon">
+                <path fill="currentColor" d="M12 3.5c-4.5 2.5-7.5 6.5-7.5 11 0 3.5 2.5 6 6 6 2 0 3.5-.8 4.5-2 1 1.2 2.5 2 4.5 2 3.5 0 6-2.5 6-6 0-4.5-3-8.5-7.5-11zm-3.5 12c-1.5 0-2.5-1-2.5-2.5 0-2 1.5-4 4-5.5 0 3-1.5 8-1.5 8zm8 0s-1.5-5-1.5-8c2.5 1.5 4 3.5 4 5.5 0 1.5-1 2.5-2.5 2.5z"/>
+            </g>
+            <g id="icon-dark">
+                <path fill="currentColor" d="M13 3a9 9 0 1 0 8 13.2 7.5 7.5 0 1 1-8-13.2z"/>
+            </g>
+            <g id="icon-steel">
+                <path fill="currentColor" d="M12 3.5L4.5 8v8L12 20.5l7.5-4.5V8L12 3.5zm0 4.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+            </g>
+            <g id="icon-fairy">
+                <path fill="currentColor" d="M12 3c0 5-4 9-9 9 5 0 9 4 9 9 0-5 4-9 9-9-5 0-9-4-9-9z"/>
+            </g>
+        </defs>
+    </svg>
+
+    <nav>
+        <button id="nav-chart" class="active" onclick="switchView('chart')">📊 상성표</button>
+        <button id="nav-quiz" onclick="switchView('quiz')">🎮 퀴즈 풀기</button>
+    </nav>
+
+    <main>
+        <!-- Chart Section -->
+        <section id="view-chart" class="view-section active">
+            <div class="chart-header">
+                <div class="header-weakness">효과가 굉장하다! (약점)</div>
+                <div>기준 타입</div>
+                <div class="header-strength">효과가 굉장하다! (강점)</div>
+            </div>
+            <div class="chart-list" id="chart-list">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="view-quiz" class="view-section">
+            <div class="quiz-container">
+                <div id="quiz-target-container" class="quiz-target"></div>
+                <div id="quiz-question" class="quiz-question"></div>
+                
+                <div class="quiz-options" id="quiz-options">
+                    <!-- Buttons generated via JS -->
+                </div>
+
+                <div id="quiz-result" class="quiz-result">
+                    <h3 id="result-title"></h3>
+                    <p id="result-explanation"></p>
+                </div>
+
+                <button id="next-btn" class="next-btn" onclick="generateQuiz()">다음 문제</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const typeData = [
+            {
+                id: "normal", name: "노말", color: "#A8A77A", textColor: "#121212",
+                weaknesses: ["fighting"],
+                strengths: [],
+                explanation: {
+                    weaknesses: "평범한 사람(노말)은 격투기 선수(격투)에게 맞으면 아픕니다.",
+                    strengths: "평범해서 특별히 치명상을 입힐 수 있는 상성이 없습니다."
+                }
+            },
+            {
+                id: "fire", name: "불꽃", color: "#EE8130", textColor: "#ffffff",
+                weaknesses: ["water", "ground", "rock"],
+                strengths: ["grass", "ice", "bug", "steel"],
+                explanation: {
+                    weaknesses: "불은 물로 끄고, 흙이나 모래(땅)로 덮어 끄며, 바위로 눌러 끕니다.",
+                    strengths: "불은 풀과 벌레를 태우고, 얼음과 강철을 녹입니다."
+                }
+            },
+            {
+                id: "water", name: "물", color: "#6390F0", textColor: "#ffffff",
+                weaknesses: ["grass", "electric"],
+                strengths: ["fire", "ground", "rock"],
+                explanation: {
+                    weaknesses: "물은 풀에게 흡수당하고, 전기가 통하면 감전됩니다.",
+                    strengths: "물은 불을 끄고, 땅을 진흙으로 만들며, 바위를 깎아내립니다."
+                }
+            },
+            {
+                id: "grass", name: "풀", color: "#7AC74C", textColor: "#121212",
+                weaknesses: ["fire", "ice", "poison", "flying", "bug"],
+                strengths: ["water", "ground", "rock"],
+                explanation: {
+                    weaknesses: "풀은 불에 타고, 추위(얼음)에 얼어죽고, 독에 시들며, 새(비행)와 벌레에게 먹힙니다.",
+                    strengths: "풀은 물을 빨아들이고, 뿌리로 땅과 바위를 뚫고 자랍니다."
+                }
+            },
+            {
+                id: "electric", name: "전기", color: "#F7D02C", textColor: "#121212",
+                weaknesses: ["ground"],
+                strengths: ["water", "flying"],
+                explanation: {
+                    weaknesses: "전기는 땅으로 흡수되어(접지) 타격을 주지 못합니다.",
+                    strengths: "물은 전기가 잘 통하고, 공중을 나는 새(비행)는 번개에 맞기 쉽습니다."
+                }
+            },
+            {
+                id: "ice", name: "얼음", color: "#96D9D6", textColor: "#121212",
+                weaknesses: ["fire", "fighting", "rock", "steel"],
+                strengths: ["grass", "ground", "flying", "dragon"],
+                explanation: {
+                    weaknesses: "얼음은 불에 녹고, 격투가의 힘에 부서지며, 단단한 바위와 강철에 깨집니다.",
+                    strengths: "추위는 풀을 얼려죽이고, 땅을 얼어붙게 하며, 새(비행)와 파충류(드래곤)의 활동을 멈추게 합니다."
+                }
+            },
+            {
+                id: "fighting", name: "격투", color: "#C22E28", textColor: "#ffffff",
+                weaknesses: ["flying", "psychic", "fairy"],
+                strengths: ["normal", "ice", "rock", "dark", "steel"],
+                explanation: {
+                    weaknesses: "하늘을 나는 적(비행)을 때리기 힘들고, 초능력(에스퍼)과 마법(페어리)에는 육탄전이 통하지 않습니다.",
+                    strengths: "단련된 주먹은 평범한 사람(노말)을 이기고, 얼음/바위/강철을 부수며, 악당(악)을 물리치는 정의의 상징입니다."
+                }
+            },
+            {
+                id: "poison", name: "독", color: "#A33EA1", textColor: "#ffffff",
+                weaknesses: ["ground", "psychic"],
+                strengths: ["grass", "fairy"],
+                explanation: {
+                    weaknesses: "독은 넓은 땅에 스며들어 정화되고, 정신력(에스퍼)에는 물리적인 독이 통하지 않습니다.",
+                    strengths: "독은 식물(풀)을 시들게 하고, 순수한 요정(페어리)은 오염(독)에 취약합니다."
+                }
+            },
+            {
+                id: "ground", name: "땅", color: "#E2BF65", textColor: "#121212",
+                weaknesses: ["water", "grass", "ice"],
+                strengths: ["fire", "electric", "poison", "rock", "steel"],
+                explanation: {
+                    weaknesses: "땅은 물에 씻겨내려가고, 풀뿌리에 파고들리며, 얼어붙으면(얼음) 쩍쩍 갈라집니다.",
+                    strengths: "흙은 불을 덮어 끄고, 전기를 흡수하며, 독을 묻고, 바위를 갈아버리며 강철을 찌그러뜨립니다."
+                }
+            },
+            {
+                id: "flying", name: "비행", color: "#A98FF3", textColor: "#121212",
+                weaknesses: ["electric", "ice", "rock"],
+                strengths: ["grass", "fighting", "bug"],
+                explanation: {
+                    weaknesses: "하늘을 날 때는 번개(전기)에 맞기 쉽고, 날개가 얼면(얼음) 추락하며, 돌(바위)에 맞아도 떨어집니다.",
+                    strengths: "새는 풀과 벌레를 쪼아 먹고, 지상에서 싸우는 격투가의 공격이 닿지 않는 하늘에서 공격합니다."
+                }
+            },
+            {
+                id: "psychic", name: "에스퍼", color: "#F95587", textColor: "#ffffff",
+                weaknesses: ["bug", "ghost", "dark"],
+                strengths: ["fighting", "poison"],
+                explanation: {
+                    weaknesses: "인간이 본능적으로 두려워하는 벌레, 유령(고스트), 어둠(악) 앞에서는 두려움에 집중력이 흐트러집니다.",
+                    strengths: "육체파(격투)를 정신력으로 지배하고, 몸에 퍼지는 독을 초능력으로 정화합니다."
+                }
+            },
+            {
+                id: "bug", name: "벌레", color: "#A6B91A", textColor: "#121212",
+                weaknesses: ["fire", "flying", "rock"],
+                strengths: ["grass", "psychic", "dark"],
+                explanation: {
+                    weaknesses: "벌레는 불에 타죽고, 새(비행)에게 잡아먹히며, 바위에 깔려죽습니다.",
+                    strengths: "벌레는 풀을 갉아먹고, 집중하는 사람(에스퍼)을 방해하며, 어둠(악) 속에서도 잘 활동합니다."
+                }
+            },
+            {
+                id: "rock", name: "바위", color: "#B6A136", textColor: "#ffffff",
+                weaknesses: ["water", "grass", "fighting", "ground", "steel"],
+                strengths: ["fire", "ice", "flying", "bug"],
+                explanation: {
+                    weaknesses: "바위는 물과 풀 뿌리에 깎이고, 격투가에게 부서지며, 지진(땅)에 무너지고 강철보다 무릅니다.",
+                    strengths: "바위는 불을 덮어 끄고, 얼음을 깨부수며, 새(비행)와 벌레를 돌로 쳐서 떨어뜨립니다."
+                }
+            },
+            {
+                id: "ghost", name: "고스트", color: "#735797", textColor: "#ffffff",
+                weaknesses: ["ghost", "dark"],
+                strengths: ["psychic", "ghost"],
+                explanation: {
+                    weaknesses: "유령끼리는 서로 물리력을 행사할 수 있고, 깊은 어둠(악)에는 유령도 잡아먹힙니다.",
+                    strengths: "초능력자(에스퍼)도 유령은 두려워하고, 유령의 공격은 유령에게 잘 통합니다."
+                }
+            },
+            {
+                id: "dragon", name: "드래곤", color: "#6F35FC", textColor: "#ffffff",
+                weaknesses: ["ice", "dragon", "fairy"],
+                strengths: ["dragon"],
+                explanation: {
+                    weaknesses: "파충류라 뼈속까지 얼어붙는 추위(얼음)에 약하고, 동족(드래곤)끼리의 싸움은 치명적이며, 요정(페어리)의 마법에 퇴치당합니다.",
+                    strengths: "강력한 드래곤에게 치명상을 입힐 수 있는 건 같은 드래곤뿐입니다."
+                }
+            },
+            {
+                id: "dark", name: "악", color: "#705746", textColor: "#ffffff",
+                weaknesses: ["fighting", "bug", "fairy"],
+                strengths: ["psychic", "ghost"],
+                explanation: {
+                    weaknesses: "악당은 정의의 주먹(격투)에 패배하고, 벌레는 어둠을 무서워하지 않으며, 순수한 빛(페어리)에 정화됩니다.",
+                    strengths: "어둠은 사람의 정신(에스퍼)을 침식하고, 유령(고스트)마저 집어삼켜 버립니다."
+                }
+            },
+            {
+                id: "steel", name: "강철", color: "#B7B7CE", textColor: "#121212",
+                weaknesses: ["fire", "fighting", "ground"],
+                strengths: ["ice", "rock", "fairy"],
+                explanation: {
+                    weaknesses: "강철은 고온의 불에 녹고, 강한 충격(격투)에 찌그러지며, 지진(땅)에 묻혀버립니다.",
+                    strengths: "강철 도구는 얼음과 바위를 쉽게 부수고, 현대 문명(강철)은 마법(페어리)을 압도합니다."
+                }
+            },
+            {
+                id: "fairy", name: "페어리", color: "#D685AD", textColor: "#121212",
+                weaknesses: ["poison", "steel"],
+                strengths: ["fighting", "dragon", "dark"],
+                explanation: {
+                    weaknesses: "순수한 요정은 오염(독)에 약하고, 차가운 문명의 이기(강철) 앞에서는 요정의 힘을 잃습니다.",
+                    strengths: "단순한 힘(격투)을 마법으로 제압하고, 드래곤을 퇴치하며, 어둠(악)을 빛으로 몰아냅니다."
+                }
+            }
+        ];
+
+        // --- View Logic ---
+        function switchView(view) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`view-${view}`).classList.add('active');
+            document.getElementById(`nav-${view}`).classList.add('active');
+
+            if(view === 'quiz') {
+                generateQuiz();
+            }
+        }
+
+        // --- Reusable SVG Helper ---
+        function getIconSvgHTML(typeId) {
+            return `<svg class="type-icon-svg" viewBox="0 0 24 24"><use href="#icon-${typeId}"/></svg>`;
+        }
+
+        // --- Chart Logic ---
+        function getTypeById(id) {
+            return typeData.find(t => t.id === id);
+        }
+
+        function createIconHTML(typeObj) {
+            const textColor = typeObj.textColor || '#ffffff';
+            return `
+                <div class="type-icon-wrapper">
+                    <div class="type-icon" style="background-color: ${typeObj.color}; color: ${textColor};" data-name="${typeObj.name}">
+                        <span class="icon-inner" style="fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(typeObj.id)}</span>
+                    </div>
+                    <span class="type-name-sub">${typeObj.name}</span>
+                </div>
+            `;
+        }
+
+        function createCenterBadgeHTML(typeObj) {
+            const textColor = typeObj.textColor || '#ffffff';
+            return `
+                <div class="center-type-badge" style="background-color: ${typeObj.color}; color: ${textColor};">
+                    <span class="center-icon-inner" style="fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(typeObj.id)}</span>
+                    <span class="center-type-name">${typeObj.name}</span>
+                </div>
+            `;
+        }
+
+        function createBadgeHTML(typeObj) {
+            const textColor = typeObj.textColor || '#ffffff';
+            return `<div class="type-badge" style="background-color: ${typeObj.color}; color: ${textColor};"><span class="badge-icon" style="fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(typeObj.id)}</span> ${typeObj.name}</div>`;
+        }
+
+        function renderChart() {
+            const chartList = document.getElementById('chart-list');
+            chartList.innerHTML = '';
+            
+            typeData.forEach(typeObj => {
+                const rowContainer = document.createElement('div');
+                rowContainer.className = 'chart-row-container';
+                
+                // Weaknesses HTML
+                let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
+                if(!weakHTML) weakHTML = `<span style="color: #666; font-size: 0.9rem;">없음</span>`;
+
+                // Strengths HTML
+                let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
+                if(!strongHTML) strongHTML = `<span style="color: #666; font-size: 0.9rem;">없음</span>`;
+
+                // Badges for explanation panel
+                let weakBadgesHTML = typeObj.weaknesses.map(id => createBadgeHTML(getTypeById(id))).join('');
+                if(!weakBadgesHTML) weakBadgesHTML = `<span style="color: #888;">없음</span>`;
+
+                let strongBadgesHTML = typeObj.strengths.map(id => createBadgeHTML(getTypeById(id))).join('');
+                if(!strongBadgesHTML) strongBadgesHTML = `<span style="color: #888;">없음</span>`;
+
+                rowContainer.innerHTML = `
+                    <div class="chart-row" onclick="this.parentElement.classList.toggle('expanded')">
+                        <div class="weaknesses">${weakHTML}</div>
+                        <div class="center-type">
+                            ${createCenterBadgeHTML(typeObj)}
+                        </div>
+                        <div class="strengths">${strongHTML}</div>
+                    </div>
+                    <div class="explanation-panel">
+                        <div class="scenario-box">
+                            <div class="scenario-title weakness">❌ 약점 (방어 시 데미지 2배)</div>
+                            <div class="type-badge-list">${weakBadgesHTML}</div>
+                            <div class="scenario-desc">${typeObj.explanation.weaknesses}</div>
+                        </div>
+                        <div class="scenario-box">
+                            <div class="scenario-title strength">⚔️ 강점 (공격 시 효과 굉장함)</div>
+                            <div class="type-badge-list">${strongBadgesHTML}</div>
+                            <div class="scenario-desc">${typeObj.explanation.strengths}</div>
+                        </div>
+                    </div>
+                `;
+                chartList.appendChild(rowContainer);
+            });
+        }
+
+        // --- Quiz Logic ---
+        let currentQuizData = null;
+
+        function generateQuiz() {
+            // Reset UI
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('quiz-result').className = 'quiz-result';
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            // 1. Pick target type
+            const target = typeData[Math.floor(Math.random() * typeData.length)];
+            
+            // 2. Pick Weakness(0) or Strength(1)
+            let qType = Math.floor(Math.random() * 2);
+            if (target.strengths.length === 0) qType = 0; // Normal type has no strengths
+            if (target.weaknesses.length === 0) qType = 1; 
+            
+            const isWeakness = qType === 0;
+            
+            // 3. Get correct answer
+            const correctList = isWeakness ? target.weaknesses : target.strengths;
+            const correctId = correctList[Math.floor(Math.random() * correctList.length)];
+            const correctType = getTypeById(correctId);
+            
+            // 4. Get 3 wrong answers
+            const wrongCandidates = typeData.filter(t => !correctList.includes(t.id) && t.id !== target.id);
+            const wrongAnswers = [];
+            while (wrongAnswers.length < 3) {
+                const rnd = wrongCandidates[Math.floor(Math.random() * wrongCandidates.length)];
+                if (!wrongAnswers.includes(rnd)) {
+                    wrongAnswers.push(rnd);
+                }
+            }
+            
+            // 5. Shuffle options
+            const options = [correctType, ...wrongAnswers];
+            options.sort(() => Math.random() - 0.5);
+            
+            currentQuizData = {
+                target,
+                isWeakness,
+                correctType,
+                options
+            };
+
+            // Render Question
+            document.getElementById('quiz-target-container').innerHTML = createCenterBadgeHTML(target);
+            
+            const qText = isWeakness 
+                ? `다음 중 ${target.name} 타입의 <span class="highlight-weak">약점 (방어 시 데미지 2배)</span>인 타입은 무엇일까요?`
+                : `다음 중 ${target.name} 타입이 <span class="highlight-strong">공격할 때 효과가 굉장한</span> 타입은 무엇일까요?`;
+            
+            document.getElementById('quiz-question').innerHTML = qText;
+
+            // Render Options
+            options.forEach(opt => {
+                const textColor = opt.textColor || '#ffffff';
+                const btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.dataset.typeId = opt.id;
+                btn.innerHTML = `<span class="quiz-option-icon" style="background-color: ${opt.color}; fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(opt.id)}</span> <span>${opt.name}</span>`;
+                btn.onclick = () => handleAnswer(opt.id, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedId, clickedBtn) {
+            const { target, isWeakness, correctType } = currentQuizData;
+            
+            // Disable all buttons
+            const buttons = document.querySelectorAll('.quiz-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const isCorrect = selectedId === correctType.id;
+            
+            // Highlight correct and wrong based on data-type-id
+            buttons.forEach(btn => {
+                if(btn.dataset.typeId === correctType.id) {
+                    btn.classList.add('correct');
+                } else if(btn === clickedBtn && !isCorrect) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            // Show result
+            const resultBox = document.getElementById('quiz-result');
+            const resultTitle = document.getElementById('result-title');
+            const resultExplanation = document.getElementById('result-explanation');
+
+            resultBox.style.display = 'block';
+            if(isCorrect) {
+                resultBox.classList.add('correct-bg');
+                resultTitle.innerHTML = `🎉 정답입니다! (${createBadgeHTML(correctType)})`;
+                resultTitle.style.color = 'var(--secondary-color)';
+            } else {
+                resultBox.classList.add('wrong-bg');
+                resultTitle.innerHTML = `❌ 오답입니다. 정답은 ${createBadgeHTML(correctType)} 타입이었습니다.`;
+                resultTitle.style.color = 'var(--error-color)';
+            }
+
+            const explanationText = isWeakness ? target.explanation.weaknesses : target.explanation.strengths;
+            const scenarioPrefix = isWeakness ? '💡 <b>약점 연상법:</b> ' : '💡 <b>강점 연상법:</b> ';
+            resultExplanation.innerHTML = scenarioPrefix + explanationText;
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        // Initialize
+        renderChart();
+
+    </script>
+</body>
+</html>
