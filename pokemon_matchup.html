@@ -8,12 +8,14 @@
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
         :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-color: #e0e0e0;
-            --primary-color: #bb86fc;
-            --secondary-color: #03dac6;
-            --error-color: #cf6679;
+            --bg-color: #f5f6f9;
+            --surface-color: #ffffff;
+            --text-color: #212529;
+            --sub-text-color: #495057;
+            --primary-color: #6200ee;
+            --secondary-color: #00875a;
+            --error-color: #d32f2f;
+            --border-color: #e9ecef;
         }
 
         * {
@@ -41,45 +43,46 @@
 
         /* Navigation */
         nav {
-            background: rgba(30, 30, 30, 0.85);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 1rem;
+            padding: 0.8rem;
             display: flex;
             justify-content: center;
             gap: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         nav button {
             background: transparent;
             border: 2px solid transparent;
-            color: var(--text-color);
-            padding: 0.5rem 1.5rem;
+            color: var(--sub-text-color);
+            padding: 0.4rem 1.2rem;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
 
         nav button.active {
-            background: rgba(187, 134, 252, 0.15);
+            background: rgba(98, 0, 238, 0.08);
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
 
         nav button:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.03);
         }
 
         /* Main */
         main {
             flex: 1;
-            padding: 1.5rem 1rem;
+            padding: 1rem 0.5rem;
             max-width: 950px;
             margin: 0 auto;
             width: 100%;
@@ -87,7 +90,7 @@
 
         .view-section {
             display: none;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         .view-section.active {
@@ -95,124 +98,87 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Type Components */
+        /* Type Icon Component */
         .type-icon-wrapper {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .type-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             position: relative;
-            cursor: help;
+            cursor: pointer;
             transition: transform 0.2s;
             flex-shrink: 0;
         }
 
         .type-icon .icon-inner {
-            width: 22px;
-            height: 22px;
+            width: 16px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .type-icon:hover {
-            transform: scale(1.15);
-            z-index: 10;
-        }
-
-        .type-icon::after {
-            content: attr(data-name);
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            opacity: 0;
-            white-space: nowrap;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .type-icon:hover::after {
-            opacity: 1;
         }
 
         .type-name-sub {
-            display: none;
-            font-size: 0.75rem;
-            color: var(--text-color);
-            margin-top: 4px;
+            display: block;
+            font-size: 0.68rem;
+            color: var(--sub-text-color);
+            margin-top: 3px;
             font-weight: 600;
             white-space: nowrap;
+            text-align: center;
         }
 
-        /* Show type name under icons when row is expanded */
-        .chart-row-container.expanded .type-name-sub {
-            display: block;
-            animation: fadeIn 0.2s ease;
+        /* Center Target Icon (Prominent Circular) */
+        .center-type-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            border: 2.5px solid #ffffff;
         }
 
-        /* Center Target Type (Prominent & Larger) */
-        .center-type-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            font-size: 1.15rem;
+        .center-type-icon .icon-inner {
+            width: 22px;
+            height: 22px;
+        }
+
+        .center-type-wrapper .type-name-sub {
+            font-size: 0.82rem;
             font-weight: 800;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            transform: scale(1.12);
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: var(--text-color);
+            margin-top: 4px;
         }
 
-        .center-type-badge .center-icon-inner {
-            width: 26px;
-            height: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chart-row:hover .center-type-badge {
-            transform: scale(1.2);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-        }
-
-        /* Standard Badge for lists and quiz */
+        /* Standard Badge for Quiz */
         .type-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.9rem;
+            gap: 0.4rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 20px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: bold;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
         }
 
         .type-badge .badge-icon {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -221,17 +187,18 @@
         /* Chart Layout */
         .chart-header {
             display: grid;
-            grid-template-columns: 1fr 160px 1fr;
+            grid-template-columns: 1fr 85px 1fr;
             text-align: center;
-            margin-bottom: 1rem;
-            font-weight: bold;
-            font-size: 1.1rem;
-            padding: 1.1rem 1rem;
+            margin-bottom: 0.8rem;
+            font-weight: 800;
+            font-size: 1.02rem;
+            padding: 0.85rem 0.5rem;
             background: var(--surface-color);
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
             position: sticky;
-            top: 70px;
+            top: 60px;
             z-index: 90;
         }
 
@@ -241,44 +208,45 @@
         .chart-list {
             display: flex;
             flex-direction: column;
-            gap: 0.7rem;
+            gap: 0.5rem;
         }
 
         .chart-row-container {
             background: var(--surface-color);
-            border-radius: 14px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: border-color 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .chart-row-container.expanded {
-            border-color: rgba(187, 134, 252, 0.5);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(98, 0, 238, 0.12);
         }
 
         .chart-row {
             display: grid;
-            grid-template-columns: 1fr 160px 1fr;
+            grid-template-columns: 1fr 85px 1fr;
             align-items: center;
-            padding: 1.1rem 0.6rem;
+            padding: 0.75rem 0.3rem;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .chart-row:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: #f8f9fa;
         }
 
         .weaknesses, .strengths {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            gap: 4px;
+            flex-wrap: nowrap;
             align-items: center;
         }
 
-        .weaknesses { justify-content: flex-end; padding-right: 0.8rem; }
-        .strengths { justify-content: flex-start; padding-left: 0.8rem; }
+        .weaknesses { justify-content: flex-end; padding-right: 0.4rem; }
+        .strengths { justify-content: flex-start; padding-left: 0.4rem; }
 
         .center-type {
             display: flex;
@@ -287,9 +255,9 @@
 
         .explanation-panel {
             display: none;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.35);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1.2rem;
+            background: #f8f9fa;
+            border-top: 1px solid var(--border-color);
             line-height: 1.6;
             font-size: 0.95rem;
         }
@@ -298,13 +266,9 @@
             display: block;
             animation: fadeIn 0.3s ease;
         }
-        
-        .chart-row-container.expanded .chart-row {
-            background: rgba(255, 255, 255, 0.04);
-        }
 
         .scenario-box {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
         }
         .scenario-box:last-child {
             margin-bottom: 0;
@@ -312,77 +276,74 @@
 
         .scenario-title {
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1.05rem;
+            font-size: 1rem;
         }
         .scenario-title.weakness { color: var(--error-color); }
         .scenario-title.strength { color: var(--secondary-color); }
 
-        .type-badge-list {
-            display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-            margin-bottom: 0.6rem;
-        }
-
         .scenario-desc {
-            background: rgba(255, 255, 255, 0.04);
+            background: #ffffff;
             padding: 0.8rem 1rem;
             border-radius: 8px;
-            border-left: 3px solid rgba(255, 255, 255, 0.1);
-            color: #d0d0d0;
+            border-left: 4px solid var(--primary-color);
+            color: #343a40;
+            font-size: 0.92rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         /* Quiz Layout */
         .quiz-container {
             background: var(--surface-color);
             border-radius: 20px;
-            padding: 2.5rem 2rem;
+            padding: 2.2rem 1.5rem;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             max-width: 650px;
-            margin: 1.5rem auto 0;
-            border: 1px solid rgba(255,255,255,0.05);
+            margin: 1rem auto 0;
+            border: 1px solid var(--border-color);
         }
 
         .quiz-target {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .quiz-question {
-            font-size: 1.35rem;
-            margin-bottom: 2rem;
+            font-size: 1.25rem;
+            margin-bottom: 1.8rem;
             line-height: 1.5;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-color);
         }
         
-        .quiz-question .highlight-weak { color: var(--error-color); font-weight: bold; }
-        .quiz-question .highlight-strong { color: var(--secondary-color); font-weight: bold; }
+        .quiz-question .highlight-weak { color: var(--error-color); font-weight: 800; }
+        .quiz-question .highlight-strong { color: var(--secondary-color); font-weight: 800; }
 
         .quiz-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.8rem;
+            margin-bottom: 1.8rem;
         }
 
         .quiz-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0.9rem;
             color: var(--text-color);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.6rem;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .quiz-btn .quiz-option-icon {
@@ -401,93 +362,105 @@
         }
 
         .quiz-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+            background: #f8f9fa;
+            border-color: #ced4da;
             transform: translateY(-2px);
         }
 
         .quiz-btn:disabled {
             cursor: default;
-            opacity: 0.7;
+            opacity: 0.85;
         }
 
         .quiz-btn.correct {
-            background: rgba(3, 218, 198, 0.2) !important;
+            background: #e6f4ea !important;
             border-color: var(--secondary-color) !important;
+            color: #137333 !important;
             opacity: 1 !important;
         }
 
         .quiz-btn.wrong {
-            background: rgba(207, 102, 121, 0.2) !important;
+            background: #fce8e6 !important;
             border-color: var(--error-color) !important;
+            color: #c5221f !important;
         }
 
         .quiz-result {
             display: none;
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 12px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             animation: fadeIn 0.4s ease;
             text-align: left;
             line-height: 1.6;
         }
 
         .quiz-result h3 {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             flex-wrap: wrap;
         }
         
         .quiz-result.correct-bg { 
-            background: rgba(3, 218, 198, 0.05); 
-            border: 1px solid rgba(3, 218, 198, 0.2);
+            background: #e6f4ea; 
+            border: 1px solid #ceead6;
+            color: #137333;
         }
         .quiz-result.wrong-bg { 
-            background: rgba(207, 102, 121, 0.05); 
-            border: 1px solid rgba(207, 102, 121, 0.2);
+            background: #fce8e6; 
+            border: 1px solid #fad2cf;
+            color: #c5221f;
         }
 
         .next-btn {
             background: var(--primary-color);
-            color: #000;
+            color: #ffffff;
             border: none;
-            padding: 1rem 2.5rem;
+            padding: 0.8rem 2rem;
             border-radius: 30px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
             display: none;
             margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(98, 0, 238, 0.3);
         }
 
         .next-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(187, 134, 252, 0.4);
+            box-shadow: 0 6px 16px rgba(98, 0, 238, 0.4);
         }
 
-        /* Mobile tweaks */
+        /* Mobile Adjustments for Single Line Icon Fit */
         @media (max-width: 600px) {
-            .chart-row, .chart-header {
-                grid-template-columns: 1fr 120px 1fr;
-                font-size: 0.85rem;
+            main { padding: 0.8rem 0.2rem; }
+            .chart-header {
+                grid-template-columns: 1fr 70px 1fr;
+                font-size: 0.9rem;
+                padding: 0.7rem 0.2rem;
+                top: 55px;
             }
-            .weaknesses { padding-right: 0.4rem; }
-            .strengths { padding-left: 0.4rem; }
-            .type-icon { width: 32px; height: 32px; }
-            .type-icon .icon-inner { width: 17px; height: 17px; }
-            .center-type-badge { padding: 0.4rem 0.8rem; font-size: 0.95rem; transform: scale(1); }
-            .center-type-badge .center-icon-inner { width: 20px; height: 20px; }
-            
-            .quiz-options {
-                grid-template-columns: 1fr;
+            .chart-row {
+                grid-template-columns: 1fr 70px 1fr;
+                padding: 0.65rem 0.1rem;
             }
-            .quiz-container {
-                padding: 1.5rem 1rem;
-            }
+            .weaknesses { padding-right: 0.2rem; gap: 2px; }
+            .strengths { padding-left: 0.2rem; gap: 2px; }
+
+            .type-icon { width: 25px; height: 25px; }
+            .type-icon .icon-inner { width: 14px; height: 14px; }
+            .type-name-sub { font-size: 0.62rem; margin-top: 2px; }
+
+            .center-type-icon { width: 33px; height: 33px; }
+            .center-type-icon .icon-inner { width: 19px; height: 19px; }
+            .center-type-wrapper .type-name-sub { font-size: 0.72rem; }
+
+            .quiz-options { grid-template-columns: 1fr; }
+            .quiz-container { padding: 1.2rem 0.8rem; }
         }
     </style>
 </head>
@@ -569,9 +542,9 @@
         <!-- Chart Section -->
         <section id="view-chart" class="view-section active">
             <div class="chart-header">
-                <div class="header-weakness">효과가 굉장하다! (약점)</div>
+                <div class="header-weakness">약점</div>
                 <div>기준 타입</div>
-                <div class="header-strength">효과가 굉장하다! (강점)</div>
+                <div class="header-strength">강점</div>
             </div>
             <div class="chart-list" id="chart-list">
                 <!-- Javascript will populate this -->
@@ -777,6 +750,21 @@
             }
         }
 
+        // --- Accordion Single Open Logic ---
+        function toggleRow(targetContainer) {
+            const isExpanded = targetContainer.classList.contains('expanded');
+            
+            // Close all other rows so only ONE remains open
+            document.querySelectorAll('.chart-row-container').forEach(container => {
+                container.classList.remove('expanded');
+            });
+            
+            // Toggle current row
+            if (!isExpanded) {
+                targetContainer.classList.add('expanded');
+            }
+        }
+
         // --- Reusable SVG Helper ---
         function getIconSvgHTML(typeId) {
             return `<svg class="type-icon-svg" viewBox="0 0 24 24"><use href="#icon-${typeId}"/></svg>`;
@@ -787,24 +775,17 @@
             return typeData.find(t => t.id === id);
         }
 
-        function createIconHTML(typeObj) {
+        function createIconHTML(typeObj, isCenter = false) {
             const textColor = typeObj.textColor || '#ffffff';
+            const iconClass = isCenter ? "type-icon center-type-icon" : "type-icon";
+            const wrapperClass = isCenter ? "type-icon-wrapper center-type-wrapper" : "type-icon-wrapper";
+            
             return `
-                <div class="type-icon-wrapper">
-                    <div class="type-icon" style="background-color: ${typeObj.color}; color: ${textColor};" data-name="${typeObj.name}">
+                <div class="${wrapperClass}">
+                    <div class="${iconClass}" style="background-color: ${typeObj.color}; color: ${textColor};" data-name="${typeObj.name}">
                         <span class="icon-inner" style="fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(typeObj.id)}</span>
                     </div>
                     <span class="type-name-sub">${typeObj.name}</span>
-                </div>
-            `;
-        }
-
-        function createCenterBadgeHTML(typeObj) {
-            const textColor = typeObj.textColor || '#ffffff';
-            return `
-                <div class="center-type-badge" style="background-color: ${typeObj.color}; color: ${textColor};">
-                    <span class="center-icon-inner" style="fill: ${textColor}; color: ${textColor};">${getIconSvgHTML(typeObj.id)}</span>
-                    <span class="center-type-name">${typeObj.name}</span>
                 </div>
             `;
         }
@@ -824,36 +805,27 @@
                 
                 // Weaknesses HTML
                 let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!weakHTML) weakHTML = `<span style="color: #666; font-size: 0.9rem;">없음</span>`;
+                if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
 
                 // Strengths HTML
                 let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!strongHTML) strongHTML = `<span style="color: #666; font-size: 0.9rem;">없음</span>`;
-
-                // Badges for explanation panel
-                let weakBadgesHTML = typeObj.weaknesses.map(id => createBadgeHTML(getTypeById(id))).join('');
-                if(!weakBadgesHTML) weakBadgesHTML = `<span style="color: #888;">없음</span>`;
-
-                let strongBadgesHTML = typeObj.strengths.map(id => createBadgeHTML(getTypeById(id))).join('');
-                if(!strongBadgesHTML) strongBadgesHTML = `<span style="color: #888;">없음</span>`;
+                if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
 
                 rowContainer.innerHTML = `
-                    <div class="chart-row" onclick="this.parentElement.classList.toggle('expanded')">
+                    <div class="chart-row" onclick="toggleRow(this.parentElement)">
                         <div class="weaknesses">${weakHTML}</div>
                         <div class="center-type">
-                            ${createCenterBadgeHTML(typeObj)}
+                            ${createIconHTML(typeObj, true)}
                         </div>
                         <div class="strengths">${strongHTML}</div>
                     </div>
                     <div class="explanation-panel">
                         <div class="scenario-box">
                             <div class="scenario-title weakness">❌ 약점 (방어 시 데미지 2배)</div>
-                            <div class="type-badge-list">${weakBadgesHTML}</div>
                             <div class="scenario-desc">${typeObj.explanation.weaknesses}</div>
                         </div>
                         <div class="scenario-box">
                             <div class="scenario-title strength">⚔️ 강점 (공격 시 효과 굉장함)</div>
-                            <div class="type-badge-list">${strongBadgesHTML}</div>
                             <div class="scenario-desc">${typeObj.explanation.strengths}</div>
                         </div>
                     </div>
@@ -910,7 +882,7 @@
             };
 
             // Render Question
-            document.getElementById('quiz-target-container').innerHTML = createCenterBadgeHTML(target);
+            document.getElementById('quiz-target-container').innerHTML = createBadgeHTML(target);
             
             const qText = isWeakness 
                 ? `다음 중 ${target.name} 타입의 <span class="highlight-weak">약점 (방어 시 데미지 2배)</span>인 타입은 무엇일까요?`
@@ -957,11 +929,9 @@
             if(isCorrect) {
                 resultBox.classList.add('correct-bg');
                 resultTitle.innerHTML = `🎉 정답입니다! (${createBadgeHTML(correctType)})`;
-                resultTitle.style.color = 'var(--secondary-color)';
             } else {
                 resultBox.classList.add('wrong-bg');
                 resultTitle.innerHTML = `❌ 오답입니다. 정답은 ${createBadgeHTML(correctType)} 타입이었습니다.`;
-                resultTitle.style.color = 'var(--error-color)';
             }
 
             const explanationText = isWeakness ? target.explanation.weaknesses : target.explanation.strengths;
