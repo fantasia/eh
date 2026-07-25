@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        :root {
+        :root[data-theme="light"] {
             --bg-color: #f5f6f9;
             --surface-color: #ffffff;
             --text-color: #212529;
@@ -16,6 +16,23 @@
             --secondary-color: #00875a;
             --error-color: #d32f2f;
             --border-color: #e9ecef;
+            --row-hover: #f8f9fa;
+            --modal-desc-bg: #f8f9fa;
+            --close-btn-bg: #f1f3f5;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #f1f3f5;
+            --sub-text-color: #adb5bd;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --error-color: #cf6679;
+            --border-color: #2c2c2c;
+            --row-hover: #2a2a2a;
+            --modal-desc-bg: #272727;
+            --close-btn-bg: #2c2c2c;
         }
 
         * {
@@ -32,6 +49,7 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* SVG icon class styling */
@@ -41,23 +59,27 @@
             display: block;
         }
 
-        /* Navigation */
+        /* Navigation (Not sticky so it scrolls away!) */
         nav {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 0.7rem;
+            background: var(--surface-color);
+            position: relative;
+            z-index: 10;
+            padding: 0.7rem 1rem;
             display: flex;
-            justify-content: center;
-            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid var(--border-color);
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: background-color 0.3s ease;
         }
 
-        nav button {
+        .nav-links {
+            display: flex;
+            gap: 0.8rem;
+            margin: 0 auto;
+        }
+
+        nav button.nav-btn {
             background: transparent;
             border: 2px solid transparent;
             color: var(--sub-text-color);
@@ -69,14 +91,34 @@
             transition: all 0.25s ease;
         }
 
-        nav button.active {
+        nav button.nav-btn.active {
             background: rgba(98, 0, 238, 0.08);
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
 
-        nav button:hover:not(.active) {
-            background: rgba(0, 0, 0, 0.03);
+        :root[data-theme="dark"] nav button.nav-btn.active {
+            background: rgba(187, 134, 252, 0.15);
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: transform 0.2s, background 0.3s;
+            color: var(--text-color);
+            flex-shrink: 0;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1);
         }
 
         /* Main */
@@ -118,7 +160,7 @@
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
@@ -143,13 +185,13 @@
             text-align: center;
         }
 
-        /* Center Target Icon (Prominent Circular) */
+        /* Center Target Icon */
         .center-type-icon {
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+            border: 2px solid var(--surface-color);
         }
 
         .center-type-icon .icon-inner {
@@ -173,7 +215,7 @@
             border-radius: 20px;
             font-size: 0.95rem;
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
 
         .type-badge .badge-icon {
@@ -195,10 +237,10 @@
             padding: 0.6rem 0.3rem;
             background: var(--surface-color);
             border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
             border: 1px solid var(--border-color);
             position: sticky;
-            top: 55px;
+            top: 0; /* Sticky at absolute top when scrolled! */
             z-index: 90;
         }
 
@@ -221,7 +263,7 @@
             align-items: center;
             padding: 0.45rem 0.2rem;
             cursor: pointer;
-            border-bottom: 1px solid #f1f3f5;
+            border-bottom: 1px solid var(--border-color);
             transition: background 0.15s;
         }
 
@@ -230,7 +272,7 @@
         }
 
         .chart-row:hover {
-            background: #f8f9fa;
+            background: var(--row-hover);
         }
 
         .weaknesses, .strengths {
@@ -256,7 +298,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             z-index: 200;
@@ -271,12 +313,14 @@
         }
 
         .modal-card {
-            background: #ffffff;
+            background: var(--surface-color);
+            color: var(--text-color);
             border-radius: 18px;
             width: 100%;
             max-width: 500px;
             padding: 1.4rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
             animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -295,7 +339,7 @@
         }
 
         .modal-close-btn {
-            background: #f1f3f5;
+            background: var(--close-btn-bg);
             border: none;
             width: 32px;
             height: 32px;
@@ -303,7 +347,7 @@
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            color: #495057;
+            color: var(--sub-text-color);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -311,7 +355,7 @@
         }
 
         .modal-close-btn:hover {
-            background: #e9ecef;
+            opacity: 0.8;
         }
 
         .modal-section {
@@ -347,10 +391,10 @@
         }
 
         .modal-desc {
-            background: #f8f9fa;
+            background: var(--modal-desc-bg);
             padding: 0.85rem 1rem;
             border-radius: 10px;
-            color: #343a40;
+            color: var(--text-color);
             font-size: 0.92rem;
             line-height: 1.6;
             border: 1px solid var(--border-color);
@@ -391,7 +435,7 @@
         }
 
         .quiz-btn {
-            background: #ffffff;
+            background: var(--surface-color);
             border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 0.85rem;
@@ -423,8 +467,7 @@
         }
 
         .quiz-btn:hover:not(:disabled) {
-            background: #f8f9fa;
-            border-color: #ced4da;
+            background: var(--row-hover);
             transform: translateY(-2px);
         }
 
@@ -434,16 +477,16 @@
         }
 
         .quiz-btn.correct {
-            background: #e6f4ea !important;
+            background: rgba(3, 218, 198, 0.15) !important;
             border-color: var(--secondary-color) !important;
-            color: #137333 !important;
+            color: var(--secondary-color) !important;
             opacity: 1 !important;
         }
 
         .quiz-btn.wrong {
-            background: #fce8e6 !important;
+            background: rgba(207, 102, 121, 0.15) !important;
             border-color: var(--error-color) !important;
-            color: #c5221f !important;
+            color: var(--error-color) !important;
         }
 
         .quiz-result {
@@ -466,14 +509,12 @@
         }
         
         .quiz-result.correct-bg { 
-            background: #e6f4ea; 
-            border: 1px solid #ceead6;
-            color: #137333;
+            background: rgba(3, 218, 198, 0.1); 
+            border: 1px solid rgba(3, 218, 198, 0.3);
         }
         .quiz-result.wrong-bg { 
-            background: #fce8e6; 
-            border: 1px solid #fad2cf;
-            color: #c5221f;
+            background: rgba(207, 102, 121, 0.1); 
+            border: 1px solid rgba(207, 102, 121, 0.3);
         }
 
         .next-btn {
@@ -493,7 +534,6 @@
 
         .next-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(98, 0, 238, 0.4);
         }
 
         /* Mobile Adjustments */
@@ -503,7 +543,7 @@
                 grid-template-columns: 1fr 65px 1fr;
                 font-size: 0.88rem;
                 padding: 0.55rem 0.1rem;
-                top: 50px;
+                top: 0;
             }
             .chart-row {
                 grid-template-columns: 1fr 65px 1fr;
@@ -565,7 +605,7 @@
                 <path fill="currentColor" d="M4 18h16L14 6h-4L4 18zm5-4.5l3-4.5 3 4.5H9z"/>
             </g>
             <g id="icon-flying">
-                <path fill="currentColor" d="M4 15c4.5 0 8.5-2 11-6.5C13 12 16.5 14.5 20 15c-3.5 3-7.5 4.5-12 4.5-2 0-3.5-.5-4-1.5z"/>
+                <path fill="currentColor" d="M19.5 4.5c-4.8 1.5-9.2 4.8-12 9.5-1.8-1.6-4.2-2.3-6.2-1.8 2.5 3.2 5.5 5.5 9.2 6 2.2.3 4.5 0 6.5-1.2 2.5-1.4 3.5-3.8 4-6.2.5-2.2-.2-4.5-1.5-6.3zm-3.8 6.5c-1.2.9-2.5 1.6-3.8 2 1.4-.3 2.6-.9 3.6-1.7.3-.2.4-.4.2-.3zm2.5-2.8c-1.2.9-2.5 1.6-3.8 2 1.4-.3 2.6-.9 3.6-1.7.3-.2.4-.4.2-.3z"/>
             </g>
             <g id="icon-psychic">
                 <path d="M12 4.5a7.5 7.5 0 1 0 7.5 7.5c0-3.3-2.7-6-6-6s-4.5 2-4.5 4.5 2 4.5 4.5 4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
@@ -621,8 +661,13 @@
     </div>
 
     <nav>
-        <button id="nav-chart" class="active" onclick="switchView('chart')">📊 상성표</button>
-        <button id="nav-quiz" onclick="switchView('quiz')">🎮 퀴즈 풀기</button>
+        <div class="nav-links">
+            <button id="nav-chart" class="nav-btn active" onclick="switchView('chart')">📊 상성표</button>
+            <button id="nav-quiz" class="nav-btn" onclick="switchView('quiz')">🎮 퀴즈 풀기</button>
+        </div>
+        <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()" title="다크/라이트 모드 전환" aria-label="Toggle Theme">
+            <span id="theme-icon">🌙</span>
+        </button>
     </nav>
 
     <main>
@@ -742,7 +787,7 @@
                 }
             },
             {
-                id: "flying", name: "비행", color: "#A98FF3", textColor: "#121212",
+                id: "flying", name: "비행", color: "#89A1F0", textColor: "#ffffff",
                 weaknesses: ["electric", "ice", "rock"],
                 strengths: ["grass", "fighting", "bug"],
                 explanation: {
@@ -824,10 +869,28 @@
             }
         ];
 
+        // --- Theme Logic ---
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            document.getElementById('theme-icon').innerText = theme === 'dark' ? '☀️' : '🌙';
+        }
+
         // --- View Logic ---
         function switchView(view) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button.nav-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(`view-${view}`).classList.add('active');
             document.getElementById(`nav-${view}`).classList.add('active');
@@ -844,13 +907,13 @@
 
             // Weakness icons
             let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
-            if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+            if(!weakHTML) weakHTML = `<span style="color: var(--sub-text-color); font-size: 0.85rem;">없음</span>`;
             document.getElementById('modal-weakness-icons').innerHTML = weakHTML;
             document.getElementById('modal-weakness-desc').innerText = typeObj.explanation.weaknesses;
 
             // Strength icons
             let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
-            if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.85rem;">없음</span>`;
+            if(!strongHTML) strongHTML = `<span style="color: var(--sub-text-color); font-size: 0.85rem;">없음</span>`;
             document.getElementById('modal-strength-icons').innerHTML = strongHTML;
             document.getElementById('modal-strength-desc').innerText = typeObj.explanation.strengths;
 
@@ -904,11 +967,11 @@
                 
                 // Weaknesses HTML
                 let weakHTML = typeObj.weaknesses.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!weakHTML) weakHTML = `<span style="color: #888888; font-size: 0.82rem;">없음</span>`;
+                if(!weakHTML) weakHTML = `<span style="color: var(--sub-text-color); font-size: 0.82rem;">없음</span>`;
 
                 // Strengths HTML
                 let strongHTML = typeObj.strengths.map(id => createIconHTML(getTypeById(id))).join('');
-                if(!strongHTML) strongHTML = `<span style="color: #888888; font-size: 0.82rem;">없음</span>`;
+                if(!strongHTML) strongHTML = `<span style="color: var(--sub-text-color); font-size: 0.82rem;">없음</span>`;
 
                 row.innerHTML = `
                     <div class="weaknesses">${weakHTML}</div>
@@ -1028,7 +1091,8 @@
             document.getElementById('next-btn').style.display = 'block';
         }
 
-        // Initialize
+        // Initialize Theme & Chart
+        initTheme();
         renderChart();
 
     </script>
